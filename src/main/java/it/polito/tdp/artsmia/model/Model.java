@@ -13,8 +13,9 @@ import it.polito.tdp.artsmia.db.ArtsmiaDAO;
 public class Model {
 
 	private Graph<ArtObject, DefaultWeightedEdge> grafo;
-	private Map<Integer, ArtObject> idMap;
-	
+	private Map<Integer, ArtObject> idMap; 
+	// Creo la idMap e la passo al dao per riempirla con i vertici in modo tale da non avere delle ripetizioni
+	// Mi permette di avere delle performance migliori
 	
 	public Model() {
 		idMap = new HashMap<Integer,ArtObject>();
@@ -23,7 +24,7 @@ public class Model {
 	public void creaGrafo() {
 		this.grafo = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
 		ArtsmiaDAO dao = new ArtsmiaDAO();
-		dao.listObjects(idMap);
+		dao.listObjects(idMap);	// da adesso in poi la mappa contiene tutti i vertici
 		
 		//Aggiungere i vertici
 		Graphs.addAllVertices(this.grafo, idMap.values());
@@ -32,6 +33,7 @@ public class Model {
 		
 		// APPROCCIO 1 -> doppio ciclo for sui vertici -> dati due vertici -> controllo se sono collegati
 		// NON GIUNGE A TERMINE -> CI SONO TROPPI VERTICI, E FACCIAMO TROPPE QUERY AL DATABASE!!!
+		
 		/*for(ArtObject a1 : this.grafo.vertexSet()) {
 			for(ArtObject a2 : this.grafo.vertexSet()) {
 				//devo collegare a1 con a2?

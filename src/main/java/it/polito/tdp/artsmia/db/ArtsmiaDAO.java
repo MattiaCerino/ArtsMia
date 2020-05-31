@@ -22,7 +22,7 @@ public class ArtsmiaDAO {
 			ResultSet res = st.executeQuery();
 			while (res.next()) {
 				
-				if(!idMap.containsKey(res.getInt("object_id"))) {
+				if(!idMap.containsKey(res.getInt("object_id"))) { // Se la mappa non contiene quell' ArtObject faccio la new
 					ArtObject artObj = new ArtObject(res.getInt("object_id"), res.getString("classification"), res.getString("continent"), 
 							res.getString("country"), res.getInt("curator_approved"), res.getString("dated"), res.getString("department"), 
 							res.getString("medium"), res.getString("nationality"), res.getString("object_name"), res.getInt("restricted"), 
@@ -40,10 +40,8 @@ public class ArtsmiaDAO {
 
 	public int getPeso(ArtObject a1, ArtObject a2) {
 
-		String sql = "select count(*) as peso " + 
-				"from exhibition_objects as eo1, exhibition_objects eo2 " + 
-				"where eo1.exhibition_id = eo2.exhibition_id and " + 
-				"eo1.object_id = ? and eo2.object_id = ?";
+		String sql = "SELECT COUNT(*) AS peso FROM exhibition_objects AS eo1, exhibition_objects eo2 " +
+				"WHERE eo1.exhibition_id = eo2.exhibition_id AND eo1.object_id = ? AND eo2.object_id = ?";
 		Connection conn = DBConnect.getConnection();
 		try {
 			PreparedStatement st = conn.prepareStatement(sql);
@@ -70,6 +68,7 @@ public class ArtsmiaDAO {
 				"where eo1.exhibition_id = eo2.exhibition_id " + 
 				"and eo1.object_id > eo2.object_id " + 
 				"group by eo1.object_id, eo2.object_id";
+		// Questa query mi restituisce il peso di ogni arco, inteso come numero di ripetizioni di una coppia di oggetti nel db
 		Connection conn = DBConnect.getConnection();
 		List<Adiacenza> adiacenze = new ArrayList<Adiacenza>();
 		try {
